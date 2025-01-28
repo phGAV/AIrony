@@ -1,7 +1,11 @@
 import streamlit as st
 import httpx
 import os
+import logging
 from typing import Dict
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 st.set_page_config(page_title="AIrony", layout="wide")
 
@@ -18,13 +22,15 @@ if st.button("Generate Meme"):
         with st.spinner("Generating your meme..."):
             try:
                 # Call backend API
+                logger.info('calling backend api')
                 response = httpx.post(
                     f"{BACKEND_URL}/generate_meme",
-                    json={"topic": topic, "style": style}
+                    json={"topic": topic, "style": style},
+                    timeout=60.0
                 )
                 response.raise_for_status()
                 meme_data = response.json()
-                
+                logger.info(f'received data from backend: {meme_data}')
                 # Display meme with error handling
                 try:
                     image_response = httpx.get(meme_data["url"], params={"font": "impact"})

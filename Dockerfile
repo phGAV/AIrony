@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y curl \
     && pip install --no-cache-dir -r requirements.txt
 
 FROM base as backend
-COPY app/main.py .
+COPY app/main.py app/meme_generator.py ./
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 FROM base as frontend
